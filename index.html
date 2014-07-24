@@ -26,38 +26,24 @@
 			_60_seconds_from_now = new Date(now + 60*1000);
 	
 		document.addEventListener('deviceready', function () {
-
-			window.plugin.notification.local.onadd = function (id, state, json) {alert("Notification scheduled")};		
-			
-			window.plugin.notification.local.ontrigger = function (id, state, json) {alert("Notification triggered")};
-			
-			window.plugin.notification.local.onclick = function (id, state, json) {alert("Notification clicked")};
 		
-			window.plugin.notification.local.oncancel = function (id, state, json) {alert("Notification canceled")};
+			console.log("deviceready");
 
-			function btnNAdd() {
-				window.plugin.notification.local.add({
-					id:      2,
-					title:   'Reminder',
-					message: 'Dont forget to buy some flowers.',
-					repeat:  'minutely',
-					date:    _60_seconds_from_now
-					json:    JSON.stringify({ test: 123 })
-				});
-			}
+			window.plugin.notification.local.onadd = function (id, state, json) {
+				console.log("Notification scheduled; id: " + id + "; state: " + state + "; json: " + json);
+			};		
 			
-			function btnNCancel() {
-				window.plugin.notification.local.cancelAll();
-			}
-
-			function btnNCheck() {
-				window.plugin.notification.local.getScheduledIds( function (scheduledId) {
-					window.plugin.notification.local.isScheduled(scheduledId[0], function (isScheduled) {
-						 alert('Notification with ID ' + id + ' is scheduled: ' + isScheduled);
-					});		
-				});
-			}
+			window.plugin.notification.local.ontrigger = function (id, state, json) {
+				console.log("Notification triggered; id: " + id + "; state: " + state + "; json: " + json);
+			};		
 			
+			window.plugin.notification.local.onclick = function (id, state, json) {
+				console.log("Notification clicked; id: " + id + "; state: " + state + "; json: " + json);
+			};		
+		
+			window.plugin.notification.local.oncancel = function (id, state, json) {
+				console.log("Notification canceled; id: " + id + "; state: " + state + "; json: " + json);
+			};		
 			
 			window.plugin.notification.local.add({
 				id:      1,
@@ -67,7 +53,30 @@
 			});			
 				
 		}, false);
-	
+
+		function btnNAdd() {
+			window.plugin.notification.local.add({
+				id:      2,
+				title:   'Reminder',
+				message: 'Dont forget to buy some flowers.',
+				repeat:  'minutely',
+				date:    _60_seconds_from_now,
+				json:    JSON.stringify({ test: 123 })
+			});
+		}
+		
+		function btnNCancel() {
+			window.plugin.notification.local.cancelAll();
+		}
+
+		function btnNCheck() {
+			window.plugin.notification.local.getScheduledIds( function (scheduledId) {
+				console.log(scheduledId);
+				window.plugin.notification.local.isScheduled(scheduledId, function (isScheduled) {
+					 alert('Notification with ID ' + scheduledId + ' is scheduled: ' + isScheduled);
+				});		
+			});
+		}
 
 		</script>
 </body>
