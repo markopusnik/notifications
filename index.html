@@ -12,12 +12,49 @@
         <h1>PhoneGap</h1>
         <div id="deviceready" class="blink">
             <p class="event listening">Connecting to Device</p>
-            <p class="event received" onclick="window.plugin.notification.local.add({ message: 'Great app!' });">Device is Ready</p>
+            <p class="event received">Device is Ready</p>
+			<button onclick="btnNAdd()">Add</button>
+			<button onclick="btnNCancel()">Stop</button>
+			<button onclick="btnNCheck()">Check</button>			
         </div>
     </div>
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="local-notification.js"></script>
     <script type="text/javascript">]
-        window.plugin.notification.local.add({ message: 'Great app!' });
+	
+		var now                  = new Date().getTime(),
+			_60_seconds_from_now = new Date(now + 60*1000);
+        
+		function btnNAdd() {
+			window.plugin.notification.local.add({
+				id:      1,
+				title:   'Reminder',
+				message: 'Dont forget to buy some flowers.',
+				repeat:  'minutely',
+				date:    _60_seconds_from_now
+				json:       JSON.stringify({ test: 123 })
+			});
+		}
+		
+		function btnNCancel() {
+			window.plugin.notification.local.cancelAll();
+		}
+
+		function btnNCheck() {
+			window.plugin.notification.local.getScheduledIds( function (scheduledId) {
+				window.plugin.notification.local.isScheduled(scheduledId[0], function (isScheduled) {
+					 alert('Notification with ID ' + id + ' is scheduled: ' + isScheduled);
+				});		
+			});
+		}
+		
+		window.plugin.notification.local.onadd = function (id, state, json) {alert("Notification scheduled")};		
+		
+		window.plugin.notification.local.ontrigger = function (id, state, json) {alert("Notification triggered")};
+		
+		window.plugin.notification.local.onclick = function (id, state, json) {alert("Notification clicked")};
+		
+		window.plugin.notification.local.oncancel = function (id, state, json) {alert("Notification canceled")};
+		
     </script>
 </body>
