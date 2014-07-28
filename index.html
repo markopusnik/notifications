@@ -5,27 +5,91 @@
     <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
     <!--<meta name="viewport" content="user-scalable=yes, initial-scale=1, maximum-scale=4, minimum-scale=0.2, width=device-width, height=device-height, target-densitydpi=device-dpi" />-->
     <title>PhoneGap Notifications</title>
+    <script src="jquery-1.9.1.min.js"></script>
 </head>
 <body>
     <div class="app">
-        <h1>PhoneGap</h1>
-        <div id="deviceready" class="blink">
-            <p class="event listening">Connecting to Device</p>
-            <p class="event received" onclick="window.plugin.notification.local.add({ message: 'Great app!' });">Device is Ready</p>
-			<button onclick="btnNAdd()">Add</button>
-			<button onclick="btnNCancel()">Stop</button>
-			<button onclick="btnNCheck()">Check</button>			
-			<a href="mailto:pusnik.marko@gmail.com?subject=notifications hello 1">Email Me!</a>
-			<a href="mailto:?subject=&body=body body" target="_blank">Send email</a>
+        <h1>Priporočam posvet z zdravnikom</h1>
+        <div class="form">
+            <div class="form-entry">
+                <p><label for="notification-time">Priporočiljiva ponovitev merjenja čez</label>
+                <select id="notification-time" size="1">
+                    <option selected value="0">1 minute</option>
+                    <option value="1">5 minutes</option>
+                    <option value="2">1 hour</option>
+                </select></p>
+                <p><input id="notification-yes" type="checkbox" value="none"> <label for="notification-yes">Želim, da me aplikacija opomni</label></p>
+                <p><button onclick="btnNAdd()">Add</button></p>
+            </div>
         </div>
+        <hr>
+        <button onclick="btnNCancel()">Stop all</button>
+        <button onclick="btnNCheck()">Check</button>
     </div>
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="local-notification.js"></script>
     <script type="text/javascript">
 
-		var now                  = new Date().getTime(),
-			_60_seconds_from_now = new Date(now + 60*1000);
-	
+        var jqNotificationYes = $('#notification-yes'),
+            jqNotificationTime = $('#notification-time');
+
+        function btnNAdd() {
+            var now = new Date().getTime(),
+                time_from_now,
+                repeat;
+
+            console.log(jqNotificationTime);
+            console.log(jqNotificationTime.val());
+            console.log(jqNotificationYes);
+            console.log(jqNotificationYes[0].checked);
+
+            if (jqNotificationYes[0].checked) {
+                switch (jqNotificationTime.val()) {
+                    case "0":
+                        time_from_now = new Date(now + 60*1000);
+                        repeat = "minutely";
+                        break;
+                    case "1":
+                        time_from_now = new Date(now + 5*60*1000);
+                        repeat = "minutely";
+                        break;
+                    case "2":
+                        time_from_now = new Date(now + 60*60*1000);
+                        repeat = "hourly";
+                }
+
+                console.log(time_from_now);
+                console.log(repeat);
+
+                window.plugin.notification.local.add({
+                    id:      2,
+                    title:   'Parkinson Check Reminder',
+                    message: 'Ponovitev merjanja ...',
+                    repeat:  repeat,
+                    date:    time_from_now,
+                    json:    JSON.stringify({ test: 123 })
+                });
+            }
+        }
+
+        function btnNCancel() {
+            window.plugin.notification.local.cancelAll();
+        }
+
+        function btnNCheck() {
+            window.plugin.notification.local.getScheduledIds( function (scheduledId) {
+                var text;
+                console.log(scheduledId);
+                scheduledId.forEach(function(id) {
+                    window.plugin.notification.local.isScheduled(scheduledId, function (isScheduled) {
+                        text = text + "\n" + 'Notification with ID ' + scheduledId + ' is scheduled: ' + isScheduled
+                    })
+                });
+                alert(text);
+            });
+        }
+
+
 		document.addEventListener('deviceready', function () {
 		
 			console.log("deviceready");
@@ -54,30 +118,6 @@
 			});			
 				
 		}, false);
-
-		function btnNAdd() {
-			window.plugin.notification.local.add({
-				id:      2,
-				title:   'Reminder',
-				message: 'Dont forget to buy some flowers.',
-				repeat:  'minutely',
-				date:    _60_seconds_from_now,
-				json:    JSON.stringify({ test: 123 })
-			});
-		}
-		
-		function btnNCancel() {
-			window.plugin.notification.local.cancelAll();
-		}
-
-		function btnNCheck() {
-			window.plugin.notification.local.getScheduledIds( function (scheduledId) {
-				console.log(scheduledId);
-				window.plugin.notification.local.isScheduled(scheduledId, function (isScheduled) {
-					 alert('Notification with ID ' + scheduledId + ' is scheduled: ' + isScheduled);
-				});		
-			});
-		}
 
 		</script>
 </body>
