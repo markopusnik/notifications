@@ -6,6 +6,13 @@
     <!--<meta name="viewport" content="user-scalable=yes, initial-scale=1, maximum-scale=4, minimum-scale=0.2, width=device-width, height=device-height, target-densitydpi=device-dpi" />-->
     <title>PhoneGap Notifications</title>
     <script src="jquery-1.9.1.min.js"></script>
+    <style>
+        .console-line
+        {
+            font-family: monospace;
+            margin: 2px;
+        }
+    </style>
 </head>
 <body>
     <div class="app">
@@ -26,9 +33,16 @@
         <button onclick="btnNCancel()">Stop all</button>
         <button onclick="btnNCheck()">Check</button>
     </div>
+    <div id="console-log"></div>
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="local-notification.js"></script>
     <script type="text/javascript">
+
+        console = {
+            log: function (text) {
+                $("#console-log").prepend($("<p class=\"console-line\"></p>").html(text));
+            }
+        };
 
         var jqNotificationYes = $('#notification-yes'),
             jqNotificationTime = $('#notification-time');
@@ -38,10 +52,8 @@
                 time_from_now,
                 repeat;
 
-            console.log(jqNotificationTime);
-            console.log(jqNotificationTime.val());
-            console.log(jqNotificationYes);
-            console.log(jqNotificationYes[0].checked);
+            //console.log(jqNotificationTime.val());
+            //console.log(jqNotificationYes[0].checked);
 
             if (jqNotificationYes[0].checked) {
                 switch (jqNotificationTime.val()) {
@@ -79,9 +91,14 @@
         function btnNCheck() {
             window.plugin.notification.local.getScheduledIds( function (scheduledId) {
                 console.log(scheduledId);
+                scheduledId.forEach(function(id) {
+                    window.plugin.notification.local.isScheduled( id, function (isScheduled) {
+                        console.log('Notification with ID ' + id + ' is scheduled: ' + isScheduled);
+                    })
+                });
             });
-            window.plugin.notification.local.getDefaults(function(object) {
-                console.log(object);
+            window.plugin.notification.local.getDefaults( function(defaults) {
+                console.log("defaults: " + defaults);
             });
         }
 
