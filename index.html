@@ -79,11 +79,6 @@
         function btnNCheck() {
             window.plugin.notification.local.getScheduledIds( function (scheduledId) {
                 console.log(scheduledId);
-                scheduledId.forEach(function(id) {
-                    window.plugin.notification.local.isScheduled(id, function (isScheduled) {
-                        console.log('Notification with ID ' + id + ' is scheduled: ' + isScheduled);
-                    })
-                });
             });
             window.plugin.notification.local.getDefaults(function(object) {
                 console.log(object);
