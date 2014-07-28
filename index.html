@@ -78,7 +78,7 @@
 
         function btnNCheck() {
             window.plugin.notification.local.getScheduledIds( function (scheduledId) {
-                var text;
+                var text = "";
                 console.log(scheduledId);
                 scheduledId.forEach(function(id) {
                     window.plugin.notification.local.isScheduled(scheduledId, function (isScheduled) {
@@ -86,6 +86,9 @@
                     })
                 });
                 alert(text);
+            });
+            window.plugin.notification.local.getDefaults(function(object) {
+                console.log(object);
             });
         }
 
