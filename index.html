@@ -78,14 +78,12 @@
 
         function btnNCheck() {
             window.plugin.notification.local.getScheduledIds( function (scheduledId) {
-                var text = "";
                 console.log(scheduledId);
                 scheduledId.forEach(function(id) {
-                    window.plugin.notification.local.isScheduled(scheduledId, function (isScheduled) {
-                        text = text + "\n" + 'Notification with ID ' + scheduledId + ' is scheduled: ' + isScheduled
+                    window.plugin.notification.local.isScheduled(id, function (isScheduled) {
+                        console.log('Notification with ID ' + id + ' is scheduled: ' + isScheduled):
                     })
                 });
-                alert(text);
             });
             window.plugin.notification.local.getDefaults(function(object) {
                 console.log(object);
